@@ -1,7 +1,18 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import AnimatedText from "./AnimatedText";
 
 const Intro = ({ onFinish }) => {
+  const [showSkip, setShowSkip] = useState(false);
+
+  useEffect(() => {
+    // Show the skip button after 3 seconds
+    const timer = setTimeout(() => {
+      setShowSkip(true);
+    }, 3000);
+
+    return () => clearTimeout(timer); // cleanup
+  }, []);
+
   return (
     <div style={styles.container}>
       {/* Row with NEXT + animated words */}
@@ -26,10 +37,12 @@ const Intro = ({ onFinish }) => {
         </div>
       </div>
 
-      {/* Skip button */}
-      <button style={styles.skipBtn} onClick={onFinish}>
-        Skip the Good Part →
-      </button>
+      {/* Skip button (only visible after 3s) */}
+      {showSkip && (
+        <button style={styles.skipBtn} onClick={onFinish}>
+          Skip the Good Part →
+        </button>
+      )}
     </div>
   );
 };
@@ -46,38 +59,85 @@ const styles = {
     backgroundColor: "#000",
     color: "#fff",
     fontFamily: "Arial, sans-serif",
+    position: "relative", // so we can position the button
+    padding: "1rem", // Added padding for smaller screens
+    boxSizing: "border-box", // Ensure padding doesn't cause overflow
   },
   textRow: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: "20px",
+    gap: "1rem", // Changed to relative unit
+    flexWrap: "wrap", // Allow wrapping on small screens
   },
   stagnant: {
-    fontSize: "3.5rem",
+    fontSize: "clamp(2rem, 8vw, 3.5rem)", // Responsive font size
     fontWeight: "bold",
     color: "#fff",
-    letterSpacing: "2px",
+    letterSpacing: "1px", // Reduced for smaller screens
+    margin: "0.5rem 0", // Added margin for spacing when wrapped
   },
   animatedWrapper: {
-    minWidth: "300px",
+    minWidth: "min(300px, 90vw)", // Responsive min-width
     textAlign: "left",
-    fontSize: "3.5rem",
+    fontSize: "clamp(2rem, 8vw, 3.5rem)", // Responsive font size
     fontWeight: "bold",
   },
   skipBtn: {
-    marginTop: "60px",
-    padding: "12px 24px",
-    fontSize: "1rem",
+    position: "absolute",
+    bottom: "1rem", // Changed to relative unit
+    right: "1rem", // Changed to relative unit
+    padding: "0.75rem 1rem", // Changed to relative units
+    fontSize: "clamp(0.8rem, 3vw, 1rem)", // Responsive font size
     fontWeight: "bold",
-    border: "2px solid #fff",
-    borderRadius: "30px",
     background: "transparent",
     color: "#fff",
     cursor: "pointer",
-    transition: "all 0.3s ease",
+    border: "1px solid rgba(255,255,255,0.3)", // Added border for better visibility
+    borderRadius: "4px",
   },
 };
+
+// Media queries for additional responsiveness
+const mediaQueries = `
+  @media (max-width: 768px) {
+    .text-row {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .animated-wrapper {
+      text-align: center;
+    }
+    
+    .skip-btn {
+      position: fixed;
+      bottom: 1rem;
+      right: 50%;
+      transform: translateX(50%);
+      width: 80%;
+      max-width: 200px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .stagnant, .animated-wrapper {
+      font-size: 1.8rem;
+    }
+    
+    .text-row {
+      gap: 0.25rem;
+    }
+  }
+`;
+
+// Add media queries to document
+if (typeof document !== "undefined") {
+  const styleSheet = document.createElement("style");
+  styleSheet.type = "text/css";
+  styleSheet.innerText = mediaQueries;
+  document.head.appendChild(styleSheet);
+}
 
 export default Intro;
