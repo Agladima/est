@@ -3,39 +3,136 @@ import { FaLongArrowAltRight } from "react-icons/fa";
 
 const RegistrationForm = () => {
   const totalSteps = 4;
-  const [currentStep, setCurrentStep] = useState(0); // 👈 start at intro page
+  const [currentStep, setCurrentStep] = useState(0);
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     gender: "",
-    dob: "",
+    date_of_birth: "",
     lc: "",
-    yearJoined: "",
+    year_they_joined: "",
     role: "",
-    firstConference: "",
+    first_conference: "",
     expectations: "",
-    socialHandle: "",
+    social_media: "",
     allergies: "",
-    antidote: "",
-    roomSharing: "",
-    emergencyContact: "",
-    relationship: "",
-    specialInstructions: "",
+    allergy_treatment: "",
+    can_stay_with_opposite_sex: "",
+    emergency_contact: "",
+    emergency_contact_relationship: "",
+    instructions: "",
   });
 
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  const nextStep = () =>
-    currentStep < totalSteps && setCurrentStep(currentStep + 1);
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: false });
+  };
+
+  const validateStep = () => {
+    const stepFields = {
+      1: ["name", "email", "gender", "date_of_birth"],
+      2: ["lc", "year_they_joined", "role", "first_conference"],
+      3: ["expectations", "social_media", "allergies", "allergy_treatment"],
+      4: [
+        "can_stay_with_opposite_sex",
+        "emergency_contact",
+        "emergency_contact_relationship",
+        "instructions",
+      ],
+    };
+
+    const fields = stepFields[currentStep] || [];
+    let valid = true;
+    let newErrors = {};
+
+    for (let field of fields) {
+      const value = formData[field].trim();
+      if (!value) {
+        newErrors[field] = true;
+        valid = false;
+      }
+      if (
+        field === "email" &&
+        (!value.includes("@") || !value.includes(".com"))
+      ) {
+        newErrors[field] = true;
+        valid = false;
+      }
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const nextStep = () => {
+    if (!validateStep()) return;
+    if (currentStep < totalSteps) setCurrentStep(currentStep + 1);
+  };
+
   const prevStep = () => currentStep > 0 && setCurrentStep(currentStep - 1);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    currentStep === totalSteps
-      ? alert("Form submitted: " + JSON.stringify(formData, null, 2))
-      : nextStep();
+    if (!validateStep()) return;
+
+    if (currentStep === totalSteps) {
+      try {
+        setLoading(true);
+
+        const payload = {
+          ...formData,
+          first_conference: formData.first_conference.toLowerCase() === "yes",
+          can_stay_with_opposite_sex:
+            formData.can_stay_with_opposite_sex.toLowerCase() === "yes",
+        };
+
+        const res = await fetch(
+          "https://ain-backend.fly.dev/api/next-ife/register",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          }
+        );
+
+        if (!res.ok) throw new Error("Failed to submit form");
+
+        const data = await res.json();
+        alert("✅ Registration successful!");
+        console.log("Response:", data);
+
+        setFormData({
+          name: "",
+          email: "",
+          gender: "",
+          date_of_birth: "",
+          lc: "",
+          year_they_joined: "",
+          role: "",
+          first_conference: "",
+          expectations: "",
+          social_media: "",
+          allergies: "",
+          allergy_treatment: "",
+          can_stay_with_opposite_sex: "",
+          emergency_contact: "",
+          emergency_contact_relationship: "",
+          instructions: "",
+        });
+        setErrors({});
+        setCurrentStep(0);
+      } catch (err) {
+        alert("❌ Error: " + err.message);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      nextStep();
+    }
   };
 
   const images = {
@@ -58,48 +155,21 @@ const RegistrationForm = () => {
 
   return (
     <>
-      {/*  Responsive CSS  */}
       <style>
         {`
           @media (max-width: 768px) {
-            .wrapper {
-              flex-direction: column !important;
-              height: auto !important;
-            }
-            .left {
-              order: -1;
-              height: 40vh;
-            }
-            .left img {
-              object-fit: cover;
-            }
-            .right {
-              padding: 20px !important;
-            }
-            .topBar {
-              font-size: 0.9rem;
-            }
-            .form {
-              gap: 15px !important;
-            }
-            .navButtons {
-              flex-direction: column;
-              gap: 10px;
-              align-items: stretch;
-            }
-            .proceedWrapper {
-              justify-content: center !important;
-            }
-            .proceedBtn {
-              width: 100%;
-              justify-content: center;
-            }
+            .wrapper { flex-direction: column !important; height: auto !important; }
+            .left { order: -1; height: 40vh; }
+            .left img { object-fit: cover; }
+            .right { padding: 20px !important; }
+            .form { gap: 15px !important; }
+            .navButtons { flex-direction: column; gap: 10px; align-items: stretch; }
+            .proceedBtn { width: 100%; justify-content: center; }
           }
         `}
       </style>
 
       <div style={styles.wrapper} className="wrapper">
-        {/* Left Side (Image with Progress Bar) */}
         <div style={styles.left} className="left">
           <img
             src={images[currentStep]}
@@ -121,13 +191,12 @@ const RegistrationForm = () => {
           )}
         </div>
 
-        {/* Right Side (Form / Intro Page) */}
         <div
           style={{ ...styles.right, backgroundColor: theme.rightBg }}
           className="right"
         >
           {currentStep > 0 && (
-            <div style={styles.topBar} className="topBar">
+            <div style={styles.topBar}>
               <span>
                 {currentStep}/{totalSteps}
               </span>
@@ -136,7 +205,6 @@ const RegistrationForm = () => {
           )}
 
           <form style={styles.form} onSubmit={handleSubmit} className="form">
-            {/* Step 0: Intro Page */}
             {currentStep === 0 && (
               <div
                 style={{
@@ -146,36 +214,27 @@ const RegistrationForm = () => {
                   height: "100%",
                 }}
               >
-                <div
-                  style={{
-                    textAlign: "left",
-                    marginTop: "60px",
-                    whiteSpace: "pre-line",
-                  }}
-                >
-                  <p
-                    style={{
-                      color: theme.text,
-                      fontSize: "1.1rem",
-                      lineHeight: "1.6",
-                    }}
-                  >
+                <div style={{ textAlign: "left", marginTop: "60px" }}>
+                  <p style={{ color: theme.text, fontSize: "1.1rem" }}>
                     You're about to secure your spot at the very first NEXT
                     Seminar.
-                    {"\n\n"}A new name. A new era.
-                    {"\n\n"}A groundbreaking experience designed for ideas,
-                    connections, and opportunities that move the future forward.
-                    {"\n\n"}Seats are limited.
-                    {"\n"}Why wait?
+                    <br />
+                    <br />
+                    A new name. A new era.
+                    <br />
+                    <br />
+                    A groundbreaking experience designed for ideas, connections,
+                    and opportunities that move the future forward.
+                    <br />
+                    <br />
+                    Seats are limited. Why wait?
                   </p>
                 </div>
-
-                <div style={styles.proceedWrapper} className="proceedWrapper">
+                <div style={styles.proceedWrapper}>
                   <button
                     type="button"
                     onClick={nextStep}
                     style={styles.proceedBtn}
-                    className="proceedBtn"
                   >
                     PROCEED{" "}
                     <FaLongArrowAltRight style={{ marginLeft: "6px" }} />
@@ -184,7 +243,6 @@ const RegistrationForm = () => {
               </div>
             )}
 
-            {/* Step 1 */}
             {currentStep === 1 && (
               <>
                 <Input
@@ -194,6 +252,7 @@ const RegistrationForm = () => {
                   value={formData.name}
                   onChange={handleChange}
                   theme={theme}
+                  error={errors.name}
                 />
                 <Input
                   label="EMAIL ADDRESS"
@@ -202,6 +261,7 @@ const RegistrationForm = () => {
                   value={formData.email}
                   onChange={handleChange}
                   theme={theme}
+                  error={errors.email}
                 />
                 <Select
                   label="GENDER"
@@ -210,19 +270,20 @@ const RegistrationForm = () => {
                   onChange={handleChange}
                   options={["Male", "Female", "Other"]}
                   theme={theme}
+                  error={errors.gender}
                 />
                 <Input
                   label="DATE OF BIRTH"
                   type="date"
-                  name="dob"
-                  value={formData.dob}
+                  name="date_of_birth"
+                  value={formData.date_of_birth}
                   onChange={handleChange}
                   theme={theme}
+                  error={errors.date_of_birth}
                 />
               </>
             )}
 
-            {/* Step 2 */}
             {currentStep === 2 && (
               <>
                 <Select
@@ -247,14 +308,16 @@ const RegistrationForm = () => {
                     "Port Harcourt",
                   ]}
                   theme={theme}
+                  error={errors.lc}
                 />
                 <Select
                   label="YEAR YOU JOINED AIESEC"
-                  name="yearJoined"
-                  value={formData.yearJoined}
+                  name="year_they_joined"
+                  value={formData.year_they_joined}
                   onChange={handleChange}
                   options={["2020", "2021", "2022", "2023", "2024", "2025"]}
                   theme={theme}
+                  error={errors.year_they_joined}
                 />
                 <Select
                   label="ROLE"
@@ -263,19 +326,20 @@ const RegistrationForm = () => {
                   onChange={handleChange}
                   options={["TM", "TL", "LCVP", "LCP", "MCVP", "MCP"]}
                   theme={theme}
+                  error={errors.role}
                 />
-                <Input
+                <Select
                   label="FIRST CONFERENCE"
-                  type="text"
-                  name="firstConference"
-                  value={formData.firstConference}
+                  name="first_conference"
+                  value={formData.first_conference}
                   onChange={handleChange}
+                  options={["Yes", "No"]}
                   theme={theme}
+                  error={errors.first_conference}
                 />
               </>
             )}
 
-            {/* Step 3 */}
             {currentStep === 3 && (
               <>
                 <Input
@@ -285,14 +349,16 @@ const RegistrationForm = () => {
                   value={formData.expectations}
                   onChange={handleChange}
                   theme={theme}
+                  error={errors.expectations}
                 />
                 <Input
                   label="SOCIAL MEDIA HANDLE"
                   type="text"
-                  name="socialHandle"
-                  value={formData.socialHandle}
+                  name="social_media"
+                  value={formData.social_media}
                   onChange={handleChange}
                   theme={theme}
+                  error={errors.social_media}
                 />
                 <Input
                   label="ALLERGIES"
@@ -301,58 +367,62 @@ const RegistrationForm = () => {
                   value={formData.allergies}
                   onChange={handleChange}
                   theme={theme}
+                  error={errors.allergies}
                 />
                 <Input
-                  label="ANTIDOTE"
+                  label="ALLERGY TREATMENT"
                   type="text"
-                  name="antidote"
-                  value={formData.antidote}
+                  name="allergy_treatment"
+                  value={formData.allergy_treatment}
                   onChange={handleChange}
                   theme={theme}
+                  error={errors.allergy_treatment}
                 />
               </>
             )}
 
-            {/* Step 4 */}
             {currentStep === 4 && (
               <>
                 <Select
-                  label="ROOM SHARING"
-                  name="roomSharing"
-                  value={formData.roomSharing}
+                  label="CAN STAY WITH OPPOSITE SEX"
+                  name="can_stay_with_opposite_sex"
+                  value={formData.can_stay_with_opposite_sex}
                   onChange={handleChange}
                   options={["Yes", "No"]}
                   theme={theme}
+                  error={errors.can_stay_with_opposite_sex}
                 />
                 <Input
                   label="EMERGENCY CONTACT"
                   type="text"
-                  name="emergencyContact"
-                  value={formData.emergencyContact}
+                  name="emergency_contact"
+                  value={formData.emergency_contact}
                   onChange={handleChange}
                   theme={theme}
+                  error={errors.emergency_contact}
                 />
                 <Input
                   label="RELATIONSHIP WITH CONTACT"
                   type="text"
-                  name="relationship"
-                  value={formData.relationship}
+                  name="emergency_contact_relationship"
+                  value={formData.emergency_contact_relationship}
                   onChange={handleChange}
                   theme={theme}
+                  error={errors.emergency_contact_relationship}
                 />
                 <Textarea
                   label="SPECIAL INSTRUCTIONS"
-                  name="specialInstructions"
-                  value={formData.specialInstructions}
+                  name="instructions"
+                  value={formData.instructions}
                   onChange={handleChange}
                   theme={theme}
+                  error={errors.instructions}
                 />
               </>
             )}
 
-            {/* Nav Buttons */}
             {currentStep > 0 && (
-              <div style={styles.navButtons} className="navButtons">
+              <div style={styles.navButtons}>
                 {currentStep > 1 && (
                   <button
                     type="button"
@@ -362,8 +432,12 @@ const RegistrationForm = () => {
                     BACK
                   </button>
                 )}
-                <button type="submit" style={styles.nextBtn}>
-                  {currentStep === totalSteps ? "SUBMIT" : "NEXT"}
+                <button type="submit" style={styles.nextBtn} disabled={loading}>
+                  {loading
+                    ? "Submitting..."
+                    : currentStep === totalSteps
+                    ? "SUBMIT"
+                    : "NEXT"}
                 </button>
               </div>
             )}
@@ -374,44 +448,36 @@ const RegistrationForm = () => {
   );
 };
 
-/* Small reusable components */
-const Input = ({ label, theme, ...props }) => (
+/* Components */
+const Input = ({ label, theme, error, ...props }) => (
   <div style={{ ...styles.inputGroup, background: theme.inputBg }}>
     <label style={{ ...styles.label, color: theme.text }}>{label}</label>
     <input
       {...props}
       style={{
         ...styles.input,
-        borderBottomColor: theme.text,
+        borderBottomColor: error ? "red" : theme.text,
         color: theme.text,
       }}
     />
   </div>
 );
 
-const Select = ({ label, name, value, onChange, options, theme }) => (
+const Select = ({ label, theme, error, ...props }) => (
   <div style={{ ...styles.inputGroup, background: theme.inputBg }}>
     <label style={{ ...styles.label, color: theme.text }}>{label}</label>
     <select
-      name={name}
-      value={value}
-      onChange={onChange}
+      {...props}
       style={{
         ...styles.select,
-        borderBottomColor: theme.text,
+        borderBottomColor: error ? "red" : theme.text,
         color: theme.text,
         backgroundColor: theme.inputBg,
       }}
     >
-      <option value="" style={{ color: "#000", background: "#fff" }}>
-        Select
-      </option>
-      {options.map((opt) => (
-        <option
-          key={opt}
-          value={opt}
-          style={{ color: "#000", background: "#fff" }}
-        >
+      <option value="">Select</option>
+      {props.options.map((opt) => (
+        <option key={opt} value={opt}>
           {opt}
         </option>
       ))}
@@ -419,14 +485,14 @@ const Select = ({ label, name, value, onChange, options, theme }) => (
   </div>
 );
 
-const Textarea = ({ label, theme, ...props }) => (
+const Textarea = ({ label, theme, error, ...props }) => (
   <div style={{ ...styles.inputGroup, background: theme.inputBg }}>
     <label style={{ ...styles.label, color: theme.text }}>{label}</label>
     <textarea
       {...props}
       style={{
         ...styles.textarea,
-        borderBottomColor: theme.text,
+        borderBottomColor: error ? "red" : theme.text,
         color: theme.text,
       }}
     />
@@ -449,11 +515,7 @@ const styles = {
     position: "relative",
     backgroundColor: "#f0f0f0",
   },
-  leftImage: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  },
+  leftImage: { width: "100%", height: "100%", objectFit: "cover" },
   progressBar: {
     position: "absolute",
     top: 20,
@@ -464,12 +526,7 @@ const styles = {
     gap: 8,
   },
   progressSegment: { flex: 1 },
-  right: {
-    flex: 1,
-    padding: 50,
-    display: "flex",
-    flexDirection: "column",
-  },
+  right: { flex: 1, padding: 50, display: "flex", flexDirection: "column" },
   topBar: {
     display: "flex",
     justifyContent: "space-between",
@@ -483,11 +540,7 @@ const styles = {
     flexDirection: "column",
     padding: "10px 15px",
   },
-  label: {
-    fontSize: "0.8rem",
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
+  label: { fontSize: "0.8rem", fontWeight: "bold", marginBottom: 5 },
   input: {
     background: "transparent",
     border: "none",
@@ -541,7 +594,7 @@ const styles = {
   proceedWrapper: {
     display: "flex",
     justifyContent: "flex-end",
-    marginBottom: "30px",
+    marginBottom: 30,
   },
   proceedBtn: {
     padding: "10px 20px",
