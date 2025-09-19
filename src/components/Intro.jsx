@@ -94,8 +94,7 @@ const styles = {
     background: "transparent",
     color: "#fff",
     cursor: "pointer",
-    border: "1px solid rgba(255,255,255,0.3)", // Added border for better visibility
-    borderRadius: "4px",
+    border: "none",
   },
 };
 

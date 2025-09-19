@@ -1,5 +1,12 @@
+@font-face {
+  font-family: "NotoSans";
+  src: url("/Noto_Sans/NotoSans-VariableFont_wdth,wght.ttf") format("truetype");
+  font-weight: 100 900; /* variable range */
+  font-style: normal;
+}
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "NotoSans", system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
