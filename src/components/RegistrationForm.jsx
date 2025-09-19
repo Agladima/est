@@ -579,9 +579,8 @@ const styles = {
   },
   navButtons: {
     display: "flex",
-    justifyContent: "flex-end", // ✅ NEXT button pushed right
-    marginTop: 30,
-    gap: 15, // ✅ spacing between BACK and NEXT
+    justifyContent: "flex-end",
+    gap: 600,
   },
   backBtn: {
     padding: "10px 20px",
