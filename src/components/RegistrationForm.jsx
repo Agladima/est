@@ -57,7 +57,8 @@ const RegistrationForm = () => {
       }
       if (
         field === "email" &&
-        (!value.includes("@") || !value.includes(".com"))
+        (!value.includes("@") ||
+          (!value.endsWith(".com") && !value.endsWith("@aiesec.net")))
       ) {
         newErrors[field] = true;
         valid = false;
@@ -157,6 +158,15 @@ const RegistrationForm = () => {
     <>
       <style>
         {`
+          button {
+            border: none !important;
+            outline: none !important;
+            background: none !important;
+          }
+          button:hover, button:focus {
+            border: none !important;
+            outline: none !important;
+          }
           @media (max-width: 768px) {
             .wrapper { flex-direction: column !important; height: auto !important; }
             .left { order: -1; height: 40vh; }
@@ -235,6 +245,7 @@ const RegistrationForm = () => {
                     type="button"
                     onClick={nextStep}
                     style={styles.proceedBtn}
+                    className="proceedBtn"
                   >
                     PROCEED{" "}
                     <FaLongArrowAltRight style={{ marginLeft: "6px" }} />
@@ -324,7 +335,7 @@ const RegistrationForm = () => {
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
-                  options={["TM", "TL", "LCVP", "LCP", "MCVP", "MCP"]}
+                  options={["TM", "TL", "LCVP", "LCP", "MCVP", "MCP", "ALUMNI"]}
                   theme={theme}
                   error={errors.role}
                 />
@@ -388,7 +399,7 @@ const RegistrationForm = () => {
                   name="can_stay_with_opposite_sex"
                   value={formData.can_stay_with_opposite_sex}
                   onChange={handleChange}
-                  options={["Yes", "No"]}
+                  options={["Yes", "No", "Absolutely Not"]}
                   theme={theme}
                   error={errors.can_stay_with_opposite_sex}
                 />
@@ -422,7 +433,7 @@ const RegistrationForm = () => {
             )}
 
             {currentStep > 0 && (
-              <div style={styles.navButtons}>
+              <div style={styles.navButtons} className="navButtons">
                 {currentStep > 1 && (
                   <button
                     type="button"
@@ -568,28 +579,31 @@ const styles = {
   },
   navButtons: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "flex-end", // ✅ NEXT button pushed right
     marginTop: 30,
+    gap: 15, // ✅ spacing between BACK and NEXT
   },
   backBtn: {
     padding: "10px 20px",
     fontSize: "1rem",
     fontWeight: "bold",
-    border: "none",
     color: "#000",
     cursor: "pointer",
     background: "none",
+    border: "none",
+    outline: "none",
   },
   nextBtn: {
     padding: "10px 20px",
     fontSize: "1rem",
     fontWeight: "bold",
-    border: "none",
     color: "#000",
     cursor: "pointer",
     display: "flex",
     alignItems: "center",
     background: "none",
+    border: "none",
+    outline: "none",
   },
   proceedWrapper: {
     display: "flex",
@@ -600,12 +614,13 @@ const styles = {
     padding: "10px 20px",
     fontSize: "1rem",
     fontWeight: "bold",
-    border: "none",
     color: "#000",
     cursor: "pointer",
     display: "flex",
     alignItems: "center",
     background: "none",
+    border: "none",
+    outline: "none",
   },
 };
 
