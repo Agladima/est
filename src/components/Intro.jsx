@@ -33,6 +33,7 @@ const Intro = ({ onFinish }) => {
               "CONFERENCE",
               "SEMINAR",
             ]}
+            duration={10000}
             onComplete={onFinish}
           />
         </div>

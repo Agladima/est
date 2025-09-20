@@ -173,7 +173,10 @@ const RegistrationForm = () => {
             .left img { object-fit: cover; }
             .right { padding: 20px !important; }
             .form { gap: 15px !important; }
-            .navButtons { flex-direction: column; gap: 10px; align-items: stretch; }
+            .navButtons {  flex-direction: row !important; 
+        justify-content: space-between !important; 
+        width: 100%; 
+        gap: 10px; }
             .proceedBtn { width: 100%; justify-content: center; }
           }
         `}
