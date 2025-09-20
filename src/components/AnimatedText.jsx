@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const AnimatedText = ({ words, onComplete }) => {
+const AnimatedText = ({ words, onComplete, stay = 1000, fade = 300 }) => {
   const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState(true);
 
@@ -17,11 +17,11 @@ const AnimatedText = ({ words, onComplete }) => {
       setTimeout(() => {
         setIndex((prev) => prev + 1);
         setVisible(true);
-      }, 500); // fade out duration
-    }, 2000); // how long each word stays
+      }, fade); // fade duration
+    }, stay); // how long each word stays
 
     return () => clearTimeout(showTimeout);
-  }, [index, words.length, onComplete]);
+  }, [index, words.length, onComplete, stay, fade]);
 
   if (index >= words.length) return null;
 
@@ -30,7 +30,7 @@ const AnimatedText = ({ words, onComplete }) => {
       style={{
         fontSize: "2rem",
         opacity: visible ? 1 : 0,
-        transition: "opacity 0.5s ease-in-out",
+        transition: `opacity ${fade}ms ease-in-out`,
       }}
     >
       {words[index]}

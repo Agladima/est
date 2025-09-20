@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AnimatedText from "./AnimatedText";
+import { FaLongArrowAltRight } from "react-icons/fa";
 
 const Intro = ({ onFinish }) => {
   const [showSkip, setShowSkip] = useState(false);
@@ -40,7 +41,7 @@ const Intro = ({ onFinish }) => {
       {/* Skip button (only visible after 3s) */}
       {showSkip && (
         <button style={styles.skipBtn} onClick={onFinish}>
-          Skip the Good Part →
+          Skip the Good Part <FaLongArrowAltRight />
         </button>
       )}
     </div>
@@ -85,6 +86,9 @@ const styles = {
     fontWeight: "bold",
   },
   skipBtn: {
+    display: "flex", // align text + icon
+    alignItems: "center", // vertically center them
+    gap: "0.5rem", // space between text and arrow
     position: "absolute",
     bottom: "1rem", // Changed to relative unit
     right: "1rem", // Changed to relative unit
