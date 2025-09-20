@@ -580,7 +580,7 @@ const styles = {
   navButtons: {
     display: "flex",
     justifyContent: "flex-end",
-    gap: 600,
+    gap: 15,
   },
   backBtn: {
     padding: "10px 20px",

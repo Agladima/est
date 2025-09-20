@@ -1,25 +1,29 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
+import Landing from "./components/Landing";
 import Intro from "./components/Intro";
 import RegistrationForm from "./components/RegistrationForm";
-import songFile from "./assets/drake.mp3";
+import songFile from "./assets/next.mp3";
 
 const App = () => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0); // start at Landing
   const audioRef = useRef(null);
 
-  useEffect(() => {
+  // Function to start music and move to Intro
+  const handleStart = () => {
     if (audioRef.current) {
-      audioRef.current.play().catch(() => {
-        console.log("Autoplay blocked, will play on user interaction.");
+      audioRef.current.play().catch((err) => {
+        console.log("Playback failed:", err);
       });
     }
-  }, []);
+    setStep(1); // move to Intro
+  };
 
   return (
     <div>
       {/* Persistent audio (keeps playing across steps) */}
-      <audio ref={audioRef} src={songFile} autoPlay loop></audio>
+      <audio ref={audioRef} src={songFile} loop></audio>
 
+      {step === 0 && <Landing onFinish={handleStart} />}
       {step === 1 && <Intro onFinish={() => setStep(2)} />}
       {step === 2 && <RegistrationForm />}
     </div>
