@@ -29,9 +29,11 @@
 
 @font-face {
   font-family: "GT-Standard-CM";
-  src: url("../static/fonts/GTStandardTrial-LCmHv.ttf") format("truetype"),
+  src: 
   url("../static/fonts/GTStandardTrial-LCmHv.woff2") format("woff2"),
-  url("../static/fonts/GTStandardTrial-LCmHv.woff") format("woff");
+  url("../static/fonts/GTStandardTrial-LCmHv.woff") format("woff"),
+  /* url("../static/fonts/GTStandardTrial-LCmHv.ttf") format("truetype") */
+  ;
   font-weight: 900;
   font-style: normal;
 
