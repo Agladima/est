@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaLongArrowAltRight } from "react-icons/fa";
+import ArrowRight from "./ArrowRight"
 
 const RegistrationForm = () => {
   const totalSteps = 4;
@@ -144,6 +145,22 @@ const RegistrationForm = () => {
     4: "/four.png",
   };
 
+  const stepColours = [
+    {
+      color: "#ffffff",
+      bgColor: "#000000"
+    },
+    {
+      color: "#000000",
+      bgColor: "#4126AB"
+    },
+    {
+      color: "#000000",
+      bgColor: "#E50E28"
+    }
+    
+  ];
+
   const themes = {
     0: { rightBg: "#fff", inputBg: "#000", text: "#000" },
     1: { rightBg: "#fff", inputBg: "#000", text: "#fff" },
@@ -153,109 +170,81 @@ const RegistrationForm = () => {
   };
 
   const theme = themes[currentStep];
-
+  //  <img
+  //         src={images[currentStep]}
+  //         alt={`Step ${currentStep}`}
+  //         className="registration-left-image"
+  //       />
   return (
-    <>
-      <style>
-        {`
-          button {
-            border: none !important;
-            outline: none !important;
-            background: none !important;
-          }
-          button:hover, button:focus {
-            border: none !important;
-            outline: none !important;
-          }
-          @media (max-width: 768px) {
-            .wrapper { flex-direction: column !important; height: auto !important; }
-            .left { order: -1; height: 40vh; }
-            .left img { object-fit: cover; }
-            .right { padding: 20px !important; }
-            .form { gap: 15px !important; }
-            .navButtons {  flex-direction: row !important; 
-        justify-content: space-between !important; 
-        width: 100%; 
-        gap: 10px; }
-            .proceedBtn { width: 100%; justify-content: center; }
-          }
-        `}
-      </style>
-
-      <div style={styles.wrapper} className="wrapper">
-        <div style={styles.left} className="left">
-          <img
-            src={images[currentStep]}
-            alt={`Step ${currentStep}`}
-            style={styles.leftImage}
-          />
-          {currentStep > 0 && (
-            <div style={styles.progressBar}>
-              {Array.from({ length: totalSteps }).map((_, i) => (
-                <div
-                  key={i}
-                  style={{
-                    ...styles.progressSegment,
-                    backgroundColor: i < currentStep ? "#000" : "#fff",
-                  }}
-                />
-              ))}
-            </div>
-          )}
+    <div className="registration-wrapper">
+      <div className="registration-left" style={{ backgroundColor: stepColours[(currentStep === 0 ? 0 : ((currentStep - 1) % 2) + 1)].bgColor, color: stepColours[(currentStep === 0 ? 0 : ((currentStep - 1) % 2) + 1)].color }}>
+        <div className="text-left">
+          <div className="top-text">
+            <span>Discover</span>
+            <span>
+              What's
+            </span> 
+          </div>
+          <span className="bottom-text">NEXT</span>
         </div>
+        {currentStep > 0 && (
+          <div className="registration-progress-bar">
+            {Array.from({ length: totalSteps }).map((_, i) => (
+              <div
+                key={i}
+                className={`registration-progress-segment ${
+                  i < currentStep ? 'completed' : ''
+                }`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
-        <div
-          style={{ ...styles.right, backgroundColor: theme.rightBg }}
-          className="right"
-        >
-          {currentStep > 0 && (
-            <div style={styles.topBar}>
-              <span>
-                {currentStep}/{totalSteps}
-              </span>
-              <span style={styles.icon}>⏺</span>
+      <div
+        className={`registration-right step-${currentStep}`}
+      >
+
+        <form className="registration-form" onSubmit={handleSubmit}>
+        <div className="top-bar">
+          
+
+          <div className="registration-top-bar" style={{minWidth:"20px"}}>
+            {currentStep > 0 && (
+                <span>
+                  {currentStep}/{totalSteps}
+                </span>
+            )}
+          </div>
+          
+
+          <img 
+            src="/logos/next-logo.png" 
+            alt="NEXT Seminar Logo 2" 
+            className="top-logo"
+          />
+        </div>
+          {currentStep === 0 && (
+            <div className="registration-intro-content">
+              <div className="registration-intro-text">
+                <p className="registration-intro-paragraph">
+                  You're about to secure your spot at the very first NEXT
+                  Seminar.
+                  <br />
+                  <br />
+                  A new name. A new era.
+                  <br />
+                  <br />
+                  A groundbreaking experience designed for ideas, connections,
+                  and opportunities that move the future forward.
+                  <br />
+                  <br />
+                  Seats are limited. Why wait?
+                </p>
+              </div>
+              
             </div>
           )}
-
-          <form style={styles.form} onSubmit={handleSubmit} className="form">
-            {currentStep === 0 && (
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  height: "100%",
-                }}
-              >
-                <div style={{ textAlign: "left", marginTop: "60px" }}>
-                  <p style={{ color: theme.text, fontSize: "1.1rem" }}>
-                    You're about to secure your spot at the very first NEXT
-                    Seminar.
-                    <br />
-                    <br />
-                    A new name. A new era.
-                    <br />
-                    <br />
-                    A groundbreaking experience designed for ideas, connections,
-                    and opportunities that move the future forward.
-                    <br />
-                    <br />
-                    Seats are limited. Why wait?
-                  </p>
-                </div>
-                <div style={styles.proceedWrapper}>
-                  <button
-                    type="button"
-                    onClick={nextStep}
-                    style={styles.proceedBtn}
-                    className="proceedBtn"
-                  >
-                    PROCEED{" "}
-                    <FaLongArrowAltRight style={{ marginLeft: "6px" }} />
-                  </button>
-                </div>
-              </div>
-            )}
 
             {currentStep === 1 && (
               <>
@@ -435,59 +424,62 @@ const RegistrationForm = () => {
               </>
             )}
 
+            {currentStep === 0 && (
+              <div className="registration-proceed-wrapper">
+                <button
+                  type="button"
+                  onClick={nextStep}
+                  className="registration-proceed-btn"
+                >
+                  Register Now <ArrowRight />
+                </button>
+              </div>
+            )}
             {currentStep > 0 && (
-              <div style={styles.navButtons} className="navButtons">
-                {currentStep > 1 && (
-                  <button
-                    type="button"
-                    onClick={prevStep}
-                    style={styles.backBtn}
-                  >
-                    BACK
-                  </button>
-                )}
-                <button type="submit" style={styles.nextBtn} disabled={loading}>
+              <div className="registration-nav-buttons">
+                <div className="">
+                  {currentStep > 1 && (
+                    <button
+                      type="button"
+                      onClick={prevStep}
+                      className="registration-back-btn"
+                    >
+                    <ArrowRight /> BACK 
+                    </button>
+                  )}
+                </div>
+                <button type="submit" className="registration-next-btn" disabled={loading}>
                   {loading
                     ? "Submitting..."
                     : currentStep === totalSteps
                     ? "SUBMIT"
-                    : "NEXT"}
+                    : "NEXT"} <ArrowRight />
                 </button>
               </div>
             )}
-          </form>
-        </div>
+        </form>
       </div>
-    </>
+    </div>
   );
 };
 
 /* Components */
 const Input = ({ label, theme, error, ...props }) => (
-  <div style={{ ...styles.inputGroup, background: theme.inputBg }}>
-    <label style={{ ...styles.label, color: theme.text }}>{label}</label>
+  <div className={`registration-input-group ${theme.inputBg === '#000' ? 'dark' : 'light'}`}>
+    <label className={`registration-label ${theme.text === '#fff' ? 'white' : 'black'}`}>{label}</label>
     <input
       {...props}
-      style={{
-        ...styles.input,
-        borderBottomColor: error ? "red" : theme.text,
-        color: theme.text,
-      }}
+      className={`registration-input ${error ? 'error' : ''} ${theme.text === '#fff' ? 'white' : 'black'}`}
     />
   </div>
 );
 
 const Select = ({ label, theme, error, ...props }) => (
-  <div style={{ ...styles.inputGroup, background: theme.inputBg }}>
-    <label style={{ ...styles.label, color: theme.text }}>{label}</label>
+  <div className={`registration-input-group ${theme.inputBg === '#000' ? 'dark' : 'light'}`}>
+    <label className={`registration-label ${theme.text === '#fff' ? 'white' : 'black'}`}>{label}</label>
     <select
       {...props}
-      style={{
-        ...styles.select,
-        borderBottomColor: error ? "red" : theme.text,
-        color: theme.text,
-        backgroundColor: theme.inputBg,
-      }}
+      className={`registration-select ${error ? 'error' : ''} ${theme.text === '#fff' ? 'white' : 'black'} ${theme.inputBg === '#000' ? 'dark' : 'light'}`}
     >
       <option value="">Select</option>
       {props.options.map((opt) => (
@@ -500,130 +492,13 @@ const Select = ({ label, theme, error, ...props }) => (
 );
 
 const Textarea = ({ label, theme, error, ...props }) => (
-  <div style={{ ...styles.inputGroup, background: theme.inputBg }}>
-    <label style={{ ...styles.label, color: theme.text }}>{label}</label>
+  <div className={`registration-input-group ${theme.inputBg === '#000' ? 'dark' : 'light'}`}>
+    <label className={`registration-label ${theme.text === '#fff' ? 'white' : 'black'}`}>{label}</label>
     <textarea
       {...props}
-      style={{
-        ...styles.textarea,
-        borderBottomColor: error ? "red" : theme.text,
-        color: theme.text,
-      }}
+      className={`registration-textarea ${error ? 'error' : ''} ${theme.text === '#fff' ? 'white' : 'black'}`}
     />
   </div>
 );
-
-const styles = {
-  wrapper: {
-    display: "flex",
-    height: "100vh",
-    width: "100vw",
-    fontFamily: "Arial Black, sans-serif",
-  },
-  left: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-    backgroundColor: "#f0f0f0",
-  },
-  leftImage: { width: "100%", height: "100%", objectFit: "cover" },
-  progressBar: {
-    position: "absolute",
-    top: 20,
-    left: 20,
-    right: 20,
-    display: "flex",
-    height: 6,
-    gap: 8,
-  },
-  progressSegment: { flex: 1 },
-  right: { flex: 1, padding: 50, display: "flex", flexDirection: "column" },
-  topBar: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginBottom: 40,
-    fontWeight: "bold",
-  },
-  icon: { fontSize: "1.5rem" },
-  form: { display: "flex", flexDirection: "column", gap: 20, height: "100%" },
-  inputGroup: {
-    display: "flex",
-    flexDirection: "column",
-    padding: "10px 15px",
-  },
-  label: { fontSize: "0.8rem", fontWeight: "bold", marginBottom: 5 },
-  input: {
-    background: "transparent",
-    border: "none",
-    borderBottom: "2px solid",
-    padding: 8,
-    fontSize: "1rem",
-    outline: "none",
-  },
-  select: {
-    background: "transparent",
-    border: "none",
-    borderBottom: "2px solid",
-    padding: 8,
-    fontSize: "1rem",
-    outline: "none",
-  },
-  textarea: {
-    background: "transparent",
-    border: "none",
-    borderBottom: "2px solid",
-    padding: 8,
-    fontSize: "1rem",
-    outline: "none",
-    minHeight: 80,
-  },
-  navButtons: {
-    display: "flex",
-    justifyContent: "flex-end",
-    gap: 15,
-  },
-  backBtn: {
-    padding: "10px 20px",
-    fontSize: "1rem",
-    fontWeight: "bold",
-    color: "#000",
-    cursor: "pointer",
-    background: "none",
-    border: "none",
-    outline: "none",
-  },
-  nextBtn: {
-    padding: "10px 20px",
-    fontSize: "1rem",
-    fontWeight: "bold",
-    color: "#000",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    background: "none",
-    border: "none",
-    outline: "none",
-  },
-  proceedWrapper: {
-    display: "flex",
-    justifyContent: "flex-end",
-    marginBottom: 30,
-  },
-  proceedBtn: {
-    padding: "10px 20px",
-    fontSize: "1rem",
-    fontWeight: "bold",
-    color: "#000",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    background: "none",
-    border: "none",
-    outline: "none",
-  },
-};
 
 export default RegistrationForm;

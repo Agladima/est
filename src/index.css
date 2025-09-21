@@ -1,12 +1,62 @@
 @font-face {
-  font-family: "NotoSans";
-  src: url("/Noto_Sans/NotoSans-VariableFont_wdth,wght.ttf") format("truetype");
-  font-weight: 100 900; /* variable range */
+  font-family: "GT-Standard";
+  src: 
+  url("../static/fonts/GTStandardTrial-LRg.ttf") format("truetype"),
+  url("../static/fonts/GTStandardTrial-LRg.woff2") format("woff2"),
+  url("../static/fonts/GTStandardTrial-LRg.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+
+}
+@font-face {
+  font-family: "GT-Standard";
+  src: url("../static/fonts/GTStandardTrial-LBl.ttf") format("truetype"),
+  url("../static/fonts/GTStandardTrial-LBl.woff2") format("woff2"),
+  url("../static/fonts/GTStandardTrial-LBl.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+
+}
+@font-face {
+  font-family: "GT-Standard";
+  src: url("../static/fonts/GTStandardTrial-LHv.ttf") format("truetype"),
+  url("../static/fonts/GTStandardTrial-LHv.woff2") format("woff2"),
+  url("../static/fonts/GTStandardTrial-LHv.woff") format("woff");
+  font-weight: 800;
+  font-style: normal;
+
+}
+
+@font-face {
+  font-family: "GT-Standard-CM";
+  src: url("../static/fonts/GTStandardTrial-LCmHv.ttf") format("truetype"),
+  url("../static/fonts/GTStandardTrial-LCmHv.woff2") format("woff2"),
+  url("../static/fonts/GTStandardTrial-LCmHv.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+
+}
+@font-face {
+  font-family: "GT-Standard-CN";
+  src: url("../static/fonts/GTStandardTrial-LCnBd.ttf") format("truetype"),
+  url("../static/fonts/GTStandardTrial-LCnBd.woff2") format("woff2"),
+  url("../static/fonts/GTStandardTrial-LCnBd.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+
+}
+
+@font-face{
+   font-family: "GT-Standard-EXP";
+  src: url("../static/fonts/GTStandardTrial-LExpBl.ttf") format("truetype"),
+  url("../static/fonts/GTStandardTrial-LExpBl.woff2") format("woff2"),
+  url("../static/fonts/GTStandardTrial-LExpBl.woff") format("woff");
+  font-weight: 900;
   font-style: normal;
 }
 
 :root {
-  font-family: "NotoSans", system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "GT-Standard", system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -35,6 +85,8 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  font-family: var(--font-family) !important;
+  background-color: #000000;
 }
 
 h1 {

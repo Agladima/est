@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import "./App.css";
 import Landing from "./components/Landing";
 import Intro from "./components/Intro";
 import RegistrationForm from "./components/RegistrationForm";

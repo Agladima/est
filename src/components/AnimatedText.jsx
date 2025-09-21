@@ -8,6 +8,7 @@ const AnimatedText = ({ words, onComplete, stay = 1000, fade = 300 }) => {
     if (index >= words.length) {
       // all done → call parent
       onComplete();
+      setIndex(0);
       return;
     }
 
@@ -26,13 +27,7 @@ const AnimatedText = ({ words, onComplete, stay = 1000, fade = 300 }) => {
   if (index >= words.length) return null;
 
   return (
-    <h2
-      style={{
-        fontSize: "2rem",
-        opacity: visible ? 1 : 0,
-        transition: `opacity ${fade}ms ease-in-out`,
-      }}
-    >
+    <h2 className={`animated-text ${visible ? 'visible' : 'hidden'}`}>
       {words[index]}
     </h2>
   );
